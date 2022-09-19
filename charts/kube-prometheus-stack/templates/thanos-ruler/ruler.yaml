@@ -166,3 +166,6 @@ spec:
 {{- end }}
   portName: {{ .Values.thanosRuler.thanosRulerSpec.portName }}
 {{- end }}
+{{ if .Values.thanosRuler.thanosRulerSpec.podManagementPolicy }}
+  podManagementPolicy: {{ .Values.thanosRuler.thanosRulerSpec.podManagementPolicy }}
+{{- end }}

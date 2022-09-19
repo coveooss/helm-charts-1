@@ -162,4 +162,7 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.forceEnableClusterMode }}
   forceEnableClusterMode: {{ .Values.alertmanager.alertmanagerSpec.forceEnableClusterMode }}
 {{- end }}
+{{ if .Values.alertmanager.alertmanagerSpec.podManagementPolicy }}
+  podManagementPolicy: {{ .Values.alertmanager.alertmanagerSpec.podManagementPolicy }}
+{{- end }}
 {{- end }}

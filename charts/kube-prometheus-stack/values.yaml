@@ -686,6 +686,11 @@ alertmanager:
     ## Use case is e.g. spanning an Alertmanager cluster across Kubernetes clusters with a single replica in each.
     forceEnableClusterMode: false
 
+    ## Change StatefulSet's podManagementPolicy value. Only `OrderedReady` or `Parallel` are valid.
+    ## WARNING: Read limitations of StatefulSets: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations before setting this value
+    ## Defaults to value of `Parallel` if not set.
+    podManagementPolicy: ""
+
   ## ExtraSecret can be used to store various data in an extra secret
   ## (use it for example to store hashed basic auth credentials)
   extraSecret:
@@ -2856,6 +2861,11 @@ prometheus:
     ## in Prometheus so it may change in any upcoming release.
     allowOverlappingBlocks: false
 
+    ## Change StatefulSet's podManagementPolicy value. Only `OrderedReady` or `Parallel` are valid.
+    ## WARNING: Read limitations of StatefulSets: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations before setting this value
+    ## Defaults to value of `Parallel` if not set.
+    podManagementPolicy: ""
+
   additionalRulesForClusterRole: []
   #  - apiGroups: [ "" ]
   #    resources:
@@ -3352,6 +3362,11 @@ thanosRuler:
     ## PortName to use for ThanosRuler.
     ##
     portName: "web"
+
+    ## Change StatefulSet's podManagementPolicy value. Only `OrderedReady` or `Parallel` are valid.
+    ## WARNING: Read limitations of StatefulSets: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations before setting this value
+    ## Defaults to value of `Parallel` if not set.
+    podManagementPolicy: ""
 
   ## ExtraSecret can be used to store various data in an extra secret
   ## (use it for example to store hashed basic auth credentials)
