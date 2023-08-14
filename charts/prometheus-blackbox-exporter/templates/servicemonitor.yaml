@@ -29,6 +29,10 @@ spec:
       - {{ .module | default $.Values.serviceMonitor.defaults.module }}
       target:
       - {{ .url }}
+      {{- if .hostname }}
+      hostname:
+      - {{ .hostname }}
+      {{- end }}
     metricRelabelings:
       - sourceLabels: [instance]
         targetLabel: instance
@@ -40,8 +44,8 @@ spec:
       - targetLabel: {{ $targetLabel | quote }}
         replacement: {{ $replacement | quote }}
         {{- end }}
-    relabelings:
 {{- if concat (.additionalRelabeling | default list) $.Values.serviceMonitor.defaults.additionalRelabeling }}
+    relabelings:
 {{ toYaml (concat (.additionalRelabeling | default list) $.Values.serviceMonitor.defaults.additionalRelabeling) | indent 6 }}
 {{- end }}
   jobLabel: "{{ $.Release.Name }}"

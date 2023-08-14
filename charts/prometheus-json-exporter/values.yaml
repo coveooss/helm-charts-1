@@ -68,6 +68,7 @@ serviceMonitor:
 #      interval: 60s                    # Scraping interval. Overrides value set in `defaults`
 #      scrapeTimeout: 60s               # Scrape timeout. Overrides value set in `defaults`
 #      additionalMetricsRelabels: {}    # Map of metric labels and values to add
+#      module: example_module           # Name of the module to pick up from `config.yaml` for scraping this target. Optional. Default is `default` provided by the exporter itself.
 
 ingress:
   enabled: false
@@ -96,6 +97,15 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 128Mi
+
+environmentVariables: []
+  # - name: some-secret-variable
+  #   valueFrom:
+  #     secretKeyRef:
+  #       key: some-key
+  #       name: some-secret-name
+  # - name: some-other-variable
+  #   value: some-value
 
 autoscaling:
   enabled: false

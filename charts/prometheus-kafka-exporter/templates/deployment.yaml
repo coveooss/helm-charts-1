@@ -98,7 +98,7 @@ spec:
                   key: password
           {{- end }}
           name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: exporter-port
@@ -114,6 +114,10 @@ spec:
 {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- if or (.Values.tls.mountPath) (.Values.sasl.kerberos.mountPath) }}
           volumeMounts:
             {{- if .Values.tls.mountPath }}
