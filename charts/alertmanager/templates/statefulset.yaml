@@ -9,6 +9,7 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  namespace: {{ include "alertmanager.namespace" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -30,6 +31,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -39,9 +41,16 @@ spec:
       dnsConfig:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.hostAliases }}
+      hostAliases:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.schedulerName }}
+      schedulerName: {{ . }}
       {{- end }}
       {{- if or .Values.podAntiAffinity .Values.affinity }}
       affinity:
@@ -66,6 +75,9 @@ spec:
                   matchExpressions:
                     - {key: app.kubernetes.io/name, operator: In, values: [{{ include "alertmanager.name" . }}]}
         {{- end }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       {{- with .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
@@ -81,13 +93,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        {{- if and (.Values.configmapReload.enabled) (.Values.config) }}
+        {{- if .Values.configmapReload.enabled }}
         - name: {{ .Chart.Name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/alertmanager
-            - --webhook-url=http://127.0.0.1:{{ .Values.service.port }}/-/reload
+            - --webhook-url=http://127.0.0.1:9093/-/reload
           resources:
             {{- toYaml .Values.configmapReload.resources | nindent 12 }}
           {{- with .Values.configmapReload.containerPort }}
@@ -163,6 +175,9 @@ spec:
             {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
+        {{- with .Values.extraContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       volumes:
         {{- if .Values.config }}
         - name: config

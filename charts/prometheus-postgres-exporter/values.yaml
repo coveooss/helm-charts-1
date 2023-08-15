@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/prometheuscommunity/postgres-exporter
-  tag: v0.11.1
+  tag: v0.13.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -16,6 +16,8 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+command: []
+
 service:
   type: ClusterIP
   port: 80
@@ -23,6 +25,8 @@ service:
   name: http
   labels: {}
   annotations: {}
+
+automountServiceAccountToken: false
 
 serviceMonitor:
   # When set true then use a ServiceMonitor to configure scraping
@@ -125,10 +129,17 @@ hostAliases: []
   #   - "bar.local"
 
 config:
+  ## The datasource properties on config are passed through helm tpl function.
+  ## ref: https://helm.sh/docs/developing_charts/#using-the-tpl-function
   datasource:
     # Specify one of both datasource or datasourceSecret
-    host:
+    host: ''
     user: postgres
+    userSecret: {}
+    # Secret name
+    #  name:
+    # User key inside secret
+    #  key:
     # Only one of password, passwordFile, passwordSecret and pgpassfile can be specified
     password:
     # Specify passwordFile if DB password is stored in a file.
@@ -160,7 +171,9 @@ config:
   disableSettingsMetrics: false
   autoDiscoverDatabases: false
   excludeDatabases: []
+  # autoDiscoverDatabases must be true for excludeDatabases to be considered
   includeDatabases: []
+  # autoDiscoverDatabases must be true for includeDatabases to be considered
   constantLabels: {}
   # possible values debug, info, warn, error, fatal
   logLevel: ""
